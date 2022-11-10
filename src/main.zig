@@ -13,14 +13,13 @@ const Column= struct{
     title:[]const u8,
     size:u64=undefined,
     usage:u64=0,
-    ctype:Dtype=Dtype.int,
 };
 pub const DataFrame= struct{
     columns:std.StringHashMap(Column),
     size:u64,
     pub fn addColumn(self: *DataFrame,ctype:Dtype, title: []const u8) void{
         self.size+=1;
-        var nc= newcolumn(title,ctype);
+        var nc= newcolumn(title);
         self.columns.put(title, nc) catch @panic("Hash map failed");
     }
     pub fn getColumn(self: *DataFrame,title:[]const u8) []Cell{ 
@@ -31,7 +30,7 @@ pub const DataFrame= struct{
 pub fn newdf() DataFrame{
     return DataFrame{.columns=std.StringHashMap(Column).init(allocator), .size=0};
 }
-fn newcolumn(title:[]const u8, dtype:Dtype) Column{
+fn newcolumn(title:[]const u8) Column{
     var nc:Column=Column{.size=20,.usage=0,.title=title, .ctype=dtype};
     nc.Row = allocator.alloc(Cell, 20) catch undefined;
     return nc;
